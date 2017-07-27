@@ -8,8 +8,6 @@ import static junit.framework.TestCase.assertEquals;
  * Created by nicolas on 7/19/2017.
  */
 public class GenerationTest {
-    private int samples = 1000;
-
     @Test
     public void aging() {
         Generation g = new Generation(TestGrids.wasteland);
