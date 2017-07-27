@@ -1,7 +1,6 @@
 package org.hombro.gof.game;
 
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
 /**
  * The idea is we can in the background keep adding more Games to this queue for the UI to keep seeking depending on the
@@ -14,7 +13,6 @@ import java.util.logging.Logger;
  * Created by nicolas on 7/19/2017.
  */
 public class GenerationBroker {
-    private final static Logger logger = Logger.getAnonymousLogger();
     private final LinkedBlockingDeque<Generation> generations;
     private final int maxGames, maxThreads;
     private final int sleepInterval = 100;
@@ -76,7 +74,6 @@ public class GenerationBroker {
 
             private void iteration() throws InterruptedException {
                 Generation last = generations.peekLast();
-                logger.info("Last generation was: " + last.getGeneration());
                 Generation[] subs = last.split(maxThreads);
                 subs = dispatch(last, subs);
                 Generation next = last.zip(subs);
@@ -89,7 +86,6 @@ public class GenerationBroker {
                     try {
                         if (generations.size() >= maxGames) {
                             Thread.sleep(sleepInterval);
-                            logger.info("Max frames generated!");
                         } else
                             iteration();
                     } catch (InterruptedException ignored) {
@@ -109,7 +105,6 @@ public class GenerationBroker {
     public Generation nextGame() {
         while (generations.size() == 1) {
             try {
-                logger.info("Starved of generations!");
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
