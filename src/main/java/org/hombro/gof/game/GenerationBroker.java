@@ -16,6 +16,7 @@ public class GenerationBroker {
     private final LinkedBlockingDeque<Generation> generations;
     private final int maxGames, maxThreads;
     private final int sleepInterval = 100;
+    private boolean alive = true;
 
     public GenerationBroker() {
         this(Generation.random(10));
@@ -82,7 +83,7 @@ public class GenerationBroker {
 
             @Override
             public void run() {
-                while (true) {
+                while (alive) {
                     try {
                         if (generations.size() >= maxGames) {
                             Thread.sleep(sleepInterval);
@@ -111,5 +112,11 @@ public class GenerationBroker {
             }
         }
         return generations.poll();
+    }
+
+    public void kill(){
+        if(!alive)
+            throw new RuntimeException("Already dead");
+        alive = false;
     }
 }
